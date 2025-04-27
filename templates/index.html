@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test API</title>
+  </head>
+  <body>
+    <h1>Test API - Gestion des Bagages</h1>
+
+    <!-- Formulaire pour créer un bagage -->
+    <h2>Créer un Bagage</h2>
+    <form id="createBagForm">
+      <label for="bag_id">Bag ID:</label>
+      <input type="text" id="bag_id" name="bag_id" required /><br /><br />
+      <label for="owner">Owner:</label>
+      <input type="text" id="owner" name="owner" required /><br /><br />
+      <label for="flight_number">Flight Number:</label>
+      <input
+        type="text"
+        id="flight_number"
+        name="flight_number"
+        required
+      /><br /><br />
+      <label for="location">Location:</label>
+      <input type="text" id="location" name="location" required /><br /><br />
+      <label for="status">Status:</label>
+      <input type="text" id="status" name="status" required /><br /><br />
+      <label for="handler_signature">Handler Signature:</label>
+      <input
+        type="text"
+        id="handler_signature"
+        name="handler_signature"
+        required
+      /><br /><br />
+      <input type="button" value="Create Bag" onclick="submitCreateBag()" />
+    </form>
+
+    <!-- Formulaire pour ajouter un événement -->
+    <h2>Ajouter un Événement</h2>
+    <form id="addEventForm">
+      <label for="bag_id_event">Bag ID:</label>
+      <input type="text" id="bag_id_event" name="bag_id" required /><br /><br />
+      <label for="location_event">Location:</label>
+      <input
+        type="text"
+        id="location_event"
+        name="location"
+        required
+      /><br /><br />
+      <label for="status_event">Status:</label>
+      <input type="text" id="status_event" name="status" required /><br /><br />
+      <label for="timestamp_event">Timestamp:</label>
+      <input
+        type="text"
+        id="timestamp_event"
+        name="timestamp"
+        required
+      /><br /><br />
+      <label for="handler_signature_event">Handler Signature:</label>
+      <input
+        type="text"
+        id="handler_signature_event"
+        name="handler_signature"
+        required
+      /><br /><br />
+      <input type="button" value="Add Event" onclick="submitAddEvent()" />
+    </form>
+
+    <script>
+      // Fonction pour soumettre la création d'un bagage
+      function submitCreateBag() {
+        const formData = new FormData(document.getElementById("createBagForm"));
+        const bagData = {};
+
+        formData.forEach((value, key) => {
+          bagData[key] = value;
+        });
+
+        console.log("Data to send for Bag:", bagData); // Pour déboguer
+
+        fetch("/create_bag", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bagData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message) {
+              alert("Bag created successfully");
+            } else {
+              alert("Error: " + JSON.stringify(data));
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+
+      // Fonction pour soumettre l'ajout d'un événement
+      function submitAddEvent() {
+        const formData = new FormData(document.getElementById("addEventForm"));
+        const eventData = {};
+
+        formData.forEach((value, key) => {
+          eventData[key] = value;
+        });
+
+        console.log("Data to send for Event:", eventData); // Pour déboguer
+
+        fetch("/add_event", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message) {
+              alert("Event added successfully");
+            } else {
+              alert("Error: " + JSON.stringify(data));
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    </script>
+  </body>
+</html>
