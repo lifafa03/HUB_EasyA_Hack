@@ -162,7 +162,7 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
 
   return (
     <div className="border border-pink-500 rounded-lg p-4 shadow-md bg-white text-pink-500 max-w-sm mx-auto space-y-4">
-      <h2 className="text-lg font-bold">Update Stored Number</h2>
+      <h2 className="text-lg font-bold">Enter Your Baggage ID!</h2>
 
       {!isCorrectNetwork && account && (
         <div className="p-2 rounded-md bg-yellow-100 text-yellow-700 text-sm">

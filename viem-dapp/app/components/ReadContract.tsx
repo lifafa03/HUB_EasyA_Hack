@@ -43,7 +43,13 @@ const ReadContract: React.FC = () => {
 
   return (
     <div className="border border-pink-500 rounded-lg p-4 shadow-md bg-white text-pink-500 max-w-sm mx-auto">
-      <h2 className="text-lg font-bold text-center mb-4">Contract Data</h2>
+      <h2 className="text-lg font-bold text-center mb-4">Baggage Location</h2>
+      <div className="text-center">
+          <p className="text-sm font-mono bg-pink-100 px-2 py-1 rounded-md text-pink-700">
+            <strong>Stored Number:</strong> {storedNumber}
+          </p>
+        </div>
+      <h2 className="text-lg font-bold text-center mb-4">Baggage ID</h2>
       {loading ? (
         <div className="flex justify-center my-4">
           <div className="w-6 h-6 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
