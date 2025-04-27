@@ -9,6 +9,7 @@ interface WriteContractProps {
 }
 
 const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
+  const [formType, setFormType] = useState<string>("update"); // Track form type (update or create)
   const [newLocation, setNewLocation] = useState<string>("");
   const [BaggageID, setNewBaggageID] = useState<string>("");
   const [status, setStatus] = useState<{
@@ -19,6 +20,7 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  //const [account, setAccount] = useState<string | null>(null); // Simulate account state
   const [isCorrectNetwork, setIsCorrectNetwork] = useState<boolean>(true);
 
   // Check if the account is on the correct network
@@ -105,7 +107,7 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
         address: CONTRACT_ADDRESS,
         abi: CONTRACT_ABI,
         functionName: "getBaggage",
-        args: [BaggageId, newLocation],
+        args: [BaggageID, newLocation],
         account: walletClient.account,
       });
 
@@ -163,6 +165,59 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
 
   return (
     <div className="border border-pink-500 rounded-lg p-4 shadow-md bg-white text-pink-500 max-w-sm mx-auto space-y-4">
+      
+      {/* Dropdown or radio buttons to toggle between forms */}
+      <div className="space-x-4 mb-4">
+        <label>
+          <input
+            type="radio"
+            name="formType"
+            value="update"
+            checked={formType === "update"}
+            onChange={() => setFormType("update")}
+            className="mr-2"
+          />
+          Update Location
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="formType"
+            value="create"
+            checked={formType === "create"}
+            onChange={() => setFormType("create")}
+            className="mr-2"
+          />
+          Create New Baggage ID
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="formType"
+            value="view"
+            checked={formType === "view"}
+            onChange={() => setFormType("view")}
+            className="mr-2"
+          />
+          View Location
+        </label>
+      </div>
+
+      {/* Show status messages */}
+      {status.message && (
+        <div
+          className={`p-2 rounded-md break-words h-fit text-sm ${
+            status.type === "error"
+              ? "bg-red-100 text-red-500"
+              : status.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-blue-100 text-blue-700"
+          }`}
+        >
+          {status.message}
+        </div>
+      )}
+      
       <h2 className="text-lg font-bold">Change Location</h2>
       <h4 className="text-lg font-bold">Enter Baggage ID and New Location</h4>
 
@@ -187,33 +242,91 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="ID"
-          value={newLocation}
-          onChange={(e) => setNewLocation(e.target.value)}
-          disabled={isSubmitting || !account}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
-        />
-        <input
-          type="text"
-          placeholder="New Location"
-          value={BaggageID}
-          onChange={(e) => setNewBaggageID(e.target.value)}
-          disabled={isSubmitting || !account}
-          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
-        />
-        <button
-          type="submit"
-          disabled={
-            isSubmitting || !account || (!isCorrectNetwork && !!account)
-          }
-          className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition disabled:bg-gray-300"
-        >
-          {isSubmitting ? "Updating..." : "Update"}
-        </button>
-      </form>
+            {/* Conditional rendering based on formType */}
+            {formType === "update" && (
+        <>
+          <h4 className="text-lg font-bold">Update Location</h4>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Baggage ID"
+              value={""}
+              onChange={(e) => setNewBaggageID(e.target.value)}
+              disabled={isSubmitting || !account}
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+            />
+            <input
+              type="text"
+              placeholder="New Location"
+              value={newLocation}
+              onChange={(e) => setNewLocation(e.target.value)}
+              disabled={isSubmitting || !account}
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+            />
+            <button
+              type="submit"
+              disabled={isSubmitting || !account || !isCorrectNetwork}
+              className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition disabled:bg-gray-300"
+            >
+              {isSubmitting ? "Updating..." : "Update Location"}
+            </button>
+          </form>
+        </>
+      )}
+
+      {formType === "create" && (
+        <>
+          <h4 className="text-lg font-bold">Create New Baggage ID</h4>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              placeholder="New Baggage ID"
+              value={""}
+              onChange={(e) => setNewBaggageID(e.target.value)}
+              disabled={isSubmitting || !account}
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+            />
+            <input
+              type="text"
+              placeholder="Airport Code"
+              value={newLocation}
+              onChange={(e) => setNewLocation(e.target.value)}
+              disabled={isSubmitting || !account}
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+            />
+            <button
+              type="submit"
+              disabled={isSubmitting || !account || !isCorrectNetwork}
+              className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition disabled:bg-gray-300"
+            >
+              {isSubmitting ? "Creating..." : "Create Baggage"}
+            </button>
+          </form>
+        </>
+      )}
+
+      {formType === "view" && (
+        <>
+          <h4 className="text-lg font-bold">View Baggage Location</h4>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Baggage ID"
+              value={""}
+              onChange={(e) => setNewBaggageID(e.target.value)}
+              disabled={isSubmitting || !account}
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+            />
+            <button
+              type="submit"
+              disabled={isSubmitting || !account || !isCorrectNetwork}
+              className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition disabled:bg-gray-300"
+            >
+              {isSubmitting ? "Loading..." : "View Location"}
+            </button>
+          </form>
+        </>
+      )}
 
       {!account && (
         <p className="text-sm text-gray-500">
