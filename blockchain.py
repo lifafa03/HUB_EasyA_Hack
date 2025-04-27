@@ -5,108 +5,108 @@ from config import NODE_URL, PRIVATE_KEY
 def create_bag_on_chain(
     bag_id, owner, flight_number, location, status, handler_signature, timestamp
 ):
-    # Connexion à la blockchain Polkadot
+    # Connect to the Polkadot blockchain
     substrate = SubstrateInterface(url=NODE_URL)
 
-    # Créer un Keypair à partir de la clé privée
+    # Create a Keypair from the private key
     keypair = Keypair.create_from_mnemonic(PRIVATE_KEY)
 
-    # Créer un événement pour ce bagage en utilisant un smart contract
+    # Create an event for this bag using a smart contract
     try:
-        # Smart contract - Créer un bagage en ajoutant l'ID, le propriétaire, le vol, l'emplacement, le statut, la signature et le timestamp
+        # Smart contract - Create a bag by adding the ID, owner, flight, location, status, signature, and timestamp
         call = substrate.compose_call(
             call_module="AirTrace",
             call_function="createBag",
             call_params={
                 "bag_id": bag_id,
                 "owner": owner,
-                "flight_number": flight_number,  # Nouveau paramètre
+                "flight_number": flight_number,  # New parameter
                 "location": location,
-                "status": status,  # Nouveau paramètre
-                "handler_signature": handler_signature,  # Nouveau paramètre
-                "timestamp": timestamp,  # Nouveau paramètre
+                "status": status,  # New parameter
+                "handler_signature": handler_signature,  # New parameter
+                "timestamp": timestamp,  # New parameter
             },
         )
 
-        # Créer une extrinsèque pour envoyer la transaction
+        # Create an extrinsic to send the transaction
         extrinsic = substrate.extrinsic(call)
 
-        # Signer la transaction avec la clé privée
+        # Sign the transaction with the private key
         extrinsic.sign(keypair)
 
-        # Soumettre l'extrinsèque (transaction)
+        # Submit the extrinsic (transaction)
         result = substrate.submit_extrinsic(extrinsic)
         if result:
-            print(f"Le bagage {bag_id} a été créé avec succès sur la blockchain.")
+            print(f"Bag {bag_id} was successfully created on the blockchain.")
             return True
         else:
-            print(f"Échec de la création du bagage {bag_id}.")
+            print(f"Failed to create bag {bag_id}.")
             return False
     except Exception as e:
-        print(f"Erreur lors de la création du bagage : {e}")
+        print(f"Error while creating the bag: {e}")
         return False
 
 
 def add_event_on_chain(bag_id, location, status, timestamp, handler_signature):
-    # Connexion à la blockchain Polkadot
+    # Connect to the Polkadot blockchain
     substrate = SubstrateInterface(url=NODE_URL)
 
-    # Créer un Keypair à partir de la clé privée
+    # Create a Keypair from the private key
     keypair = Keypair.create_from_mnemonic(PRIVATE_KEY)
 
-    # Créer un événement pour ce bagage en utilisant un smart contract
+    # Create an event for this bag using a smart contract
     try:
-        # Smart contract - Ajouter un événement lié au bagage
+        # Smart contract - Add an event related to the bag
         call = substrate.compose_call(
             call_module="AirTrace",
             call_function="addEvent",
             call_params={
                 "bag_id": bag_id,
-                "location": location,  # Localisation de l'événement
-                "status": status,  # Le statut de l'événement (qui remplace l'ancien "event_type")
-                "timestamp": timestamp,  # Moment de l'événement
-                "handler_signature": handler_signature,  # Signature numérique du manipulant
+                "location": location,  # Event location
+                "status": status,  # Event status (replaces the old "event_type")
+                "timestamp": timestamp,  # Event timestamp
+                "handler_signature": handler_signature,  # Digital signature of the handler
             },
         )
 
-        # Créer une extrinsèque pour envoyer la transaction
+        # Create an extrinsic to send the transaction
         extrinsic = substrate.extrinsic(call)
 
-        # Signer la transaction avec la clé privée
+        # Sign the transaction with the private key
         extrinsic.sign(keypair)
 
-        # Soumettre l'extrinsèque (transaction)
+        # Submit the extrinsic (transaction)
         result = substrate.submit_extrinsic(extrinsic)
         if result:
-            print(f"L'événement pour le bagage {bag_id} a été ajouté avec succès.")
+            print(f"The event for bag {bag_id} was successfully added.")
             return True
         else:
-            print(f"Échec de l'ajout de l'événement pour le bagage {bag_id}.")
+            print(f"Failed to add the event for bag {bag_id}.")
             return False
     except Exception as e:
-        print(f"Erreur lors de l'ajout de l'événement : {e}")
+        print(f"Error while adding the event: {e}")
         return False
 
 
-# Connexion à la blockchain
+# Connect to the blockchain
 def get_bag_info_on_chain(bag_id):
-    # Connexion à la blockchain Polkadot en utilisant le NODE_URL depuis config.py
+    # Connect to the Polkadot blockchain using NODE_URL from config.py
     substrate = SubstrateInterface(
-        url=NODE_URL,  # Utiliser la valeur de NODE_URL du fichier config
-        ss58_format=42,  # Format pour Polkadot (peut varier pour d'autres réseaux)
+        url=NODE_URL,  # Use the NODE_URL value from the config file
+        ss58_format=42,  # Format for Polkadot (may vary for other networks)
     )
 
-    # Recherche de l'événement ou de l'état lié au bagage (ici c'est une exemple fictif)
-    # En réalité, il s'agit de rechercher dans un registre, un stockage ou un événement de la blockchain.
+    # Search for the event or state related to the bag (this is a fictional example)
+    # In reality, it involves searching a registry, storage, or blockchain event.
     result = substrate.query(
-        module="BagModule",  # Module où les données de bagage sont enregistrées
-        storage_function="BagStorage",  # Fonction de stockage spécifique des informations de bagage
-        params=[bag_id],  # Paramètre : ID du bagage
+        module="BagModule",  # Module where bag data is registered
+        storage_function="BagStorage",  # Specific storage function for bag information
+        params=[bag_id],  # Parameter: bag ID
     )
 
-    # Si la recherche retourne des résultats
+    # If the query returns results
     if result:
-        # Formater les données extraites
+        # Format the extracted data
         bag_info = {
             "bag_id": result["bag_id"],
             "owner": result["owner"],
@@ -119,19 +119,19 @@ def get_bag_info_on_chain(bag_id):
 
         return bag_info
     else:
-        return None  # Si aucune information n'est trouvée pour cet ID de bagage
+        return None  # If no information is found for this bag ID
 
 
-# Fonction mockée pour simuler la création d'un bagage sur la blockchain
+# Mocked function to simulate creating a bag on the blockchain
 def create_bag_on_chain_mock(
     bag_id, owner, flight_number, location, status, handler_signature, timestamp
 ):
     print(f"Simulated Bag creation with ID {bag_id} and Owner {owner}")
-    # Simuler un succès
+    # Simulate success
     return True
 
 
 def add_event_on_mock(bag_id, location, status, timestamp, handler_signature):
-    # Ici, nous simulons un succès. Dans une version réelle, cette fonction interagirait avec la blockchain.
+    # Here, we simulate a success. In a real version, this function would interact with the blockchain.
     print(f"Adding event for bag {bag_id} to the blockchain...")
-    return True  # Simule un succès, renvoie True
+    return True  # Simulate success, return True

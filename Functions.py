@@ -6,11 +6,11 @@ from blockchain import (
     create_bag_on_chain_mock,
     add_event_on_mock,
 )
-from datetime import datetime  # Pour ajouter un timestamp
+from datetime import datetime  # To add a timestamp
 
 
 def create_bag(data):
-    # Extraction des données du bagage
+    # Extract bag data
     bag_id = data.get("bag_id")
     owner = data.get("owner")
     flight_number = data.get("flight_number")
@@ -18,14 +18,14 @@ def create_bag(data):
     status = data.get("status")
     handler_signature = data.get("handler_signature")
 
-    # Vérification des paramètres obligatoires
+    # Check required parameters
     if not all([bag_id, owner, flight_number, location, status, handler_signature]):
         return {"message": "Missing required parameters"}, 400
 
-    # Ajouter le timestamp actuel
+    # Add the current timestamp
     timestamp = datetime.utcnow().isoformat()
 
-    # Créer la valise sur la blockchain en ajoutant le timestamp
+    # Create the bag on the blockchain by adding the timestamp
     # success = create_bag_on_chain(
     #    bag_id, owner, flight_number, location, status, handler_signature, timestamp
     # )
@@ -40,20 +40,20 @@ def create_bag(data):
 
 
 def add_event(data):
-    # Extraction des données de l'événement
+    # Extract event data
     bag_id = data.get("bag_id")
-    location = data.get("location")  # Localisation de l'événement
-    status = data.get("status")  # Utilisation de status pour indiquer l'événement
-    timestamp = data.get("timestamp")  # Moment où l'événement a eu lieu
+    location = data.get("location")  # Event location
+    status = data.get("status")  # Use status to indicate the event
+    timestamp = data.get("timestamp")  # Time when the event occurred
     handler_signature = data.get(
         "handler_signature"
-    )  # Signature numérique du manipulant
+    )  # Digital signature of the handler
 
-    # Vérification des paramètres obligatoires
+    # Check required parameters
     if not all([bag_id, location, status, timestamp, handler_signature]):
         return {"message": "Missing required parameters"}, 400
 
-    # Ajouter l'événement sur la blockchain (ici, un mock)
+    # Add the event on the blockchain (here, a mock)
     success = add_event_on_chain(bag_id, location, status, timestamp, handler_signature)
 
     if success:
@@ -63,20 +63,20 @@ def add_event(data):
 
 
 def add_event_update(data):
-    # Extraction des données nécessaires depuis l'argument data
+    # Extract necessary data from the argument data
     bag_id = data.get("bag_id")
     location = data.get("location")
-    status = data.get("status")  # Le statut déterminera l'événement
+    status = data.get("status")  # Status will determine the event
     handler_signature = data.get("handler_signature")
 
-    # Vérifier que tous les paramètres nécessaires sont présents
+    # Check that all necessary parameters are present
     if not all([bag_id, location, status, handler_signature]):
         return {"message": "Missing required parameters"}, 400
 
-    # Ajouter un timestamp
+    # Add a timestamp
     timestamp = datetime.utcnow().isoformat()
 
-    # Dictionnaire des événements avec leurs statuts respectifs
+    # Dictionary of events with their respective statuses
     status_events = {
         "registered": "Bag registered",
         "in_transit": "Bag in transit",
@@ -87,14 +87,14 @@ def add_event_update(data):
         "returned": "Bag returned",
     }
 
-    # Vérifier si le statut est valide
+    # Check if the status is valid
     if status not in status_events:
         return {"message": f"Invalid status: {status}"}, 400
 
-    # Ajouter l'événement sur la blockchain avec le statut et le timestamp
+    # Add the event on the blockchain with status and timestamp
     event_message = status_events[status]
 
-    # Simuler l'appel à une fonction pour ajouter l'événement sur la blockchain
+    # Simulate the call to a function to add the event on the blockchain
     success = add_event_on_chain(
         bag_id, location, event_message, timestamp, handler_signature
     )
@@ -106,20 +106,20 @@ def add_event_update(data):
 
 
 def get_bag_status():
-    # Récupérer le bag_id depuis les paramètres de la requête
-    bag_id = request.args.get("bag_id")  # Récupère le bag_id de la requête GET
+    # Retrieve the bag_id from the request parameters
+    bag_id = request.args.get("bag_id")  # Get bag_id from the GET request
 
-    # Vérifier que le bag_id est fourni
+    # Check that the bag_id is provided
     if not bag_id:
         return jsonify({"message": "Missing bag_id parameter"}), 400
 
-    # Récupérer les informations du bagage depuis la blockchain
+    # Retrieve bag information from the blockchain
     bag_info = get_bag_info_on_chain(bag_id)
 
     if not bag_info:
         return jsonify({"message": f"Bag with ID {bag_id} not found"}), 404
 
-    # Si le bagage est trouvé, renvoyer les informations
+    # If the bag is found, return the information
     return (
         jsonify(
             {
