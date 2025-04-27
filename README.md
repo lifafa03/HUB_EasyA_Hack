@@ -16,3 +16,78 @@ BOS, check-in, 456
 
 ## View to a transaction completed via our smart contract:
 https://assethub-westend.subscan.io/tx/0xd01a37d04dbb6ab1fcff45df30b9e2b5117d167bce4a40d0b62dd3baea863f20?ref=hackernoon.com
+
+
+## 📽️ Demo Video
+
+- [Click here to watch the full demo video with explanation](LINK_TO_YOUR_DEMO_VIDEO)
+
+*(Replace with your Loom or YouTube video link.)*
+
+---
+
+## 🖼️ UI Screenshots
+
+| Screen | Screenshot |
+|:------|:------------|
+| Home Page (Connect Wallet) | ![Home](screenshots/home.png) |
+| Customer View (View Location) | ![Customer View](screenshots/customer-view.png) |
+| Handler View (Update Location/Stage) | ![Handler View](screenshots/handler-view.png) |
+| Transaction Popup (MetaMask Confirm) | ![Transaction](screenshots/transaction-confirm.png) |
+
+*(Create a `/screenshots/` folder in your repo and upload your screenshots there.)*
+
+---
+
+## 📜 How the Smart Contract Works
+
+We deployed a Solidity smart contract on the Polkadot Asset Hub EVM chain to handle baggage information. The core functionality includes:
+
+- **storeBaggage(uint256 baggageId, string location, string stage)**  
+  Allows the handler to create a new baggage entry.
+
+- **updateLocation(uint256 baggageId, string newLocation, string newStage)**  
+  Allows updating the location and status (stage) of an existing baggage.
+
+- **getBaggage(uint256 baggageId)**  
+  Allows users to fetch the current location and stage of a baggage ID (free, no payment required).
+
+- **completeBaggage(uint256 baggageId)**  
+  Marks baggage as completed.
+
+✅ The contract uses simple mappings and struct storage for clean and efficient retrieval and update of baggage details.
+
+---
+
+## 🛠️ How the Frontend Works
+
+The frontend was built using **Next.js**, **React**, **TailwindCSS**, and **Viem**:
+
+- Users **connect their MetaMask wallet** to the dApp.
+- Handlers can **create** or **update** baggage information, signing blockchain transactions through MetaMask.
+- Customers can **view baggage location and stage** by simply entering the Baggage ID (no transaction or gas fees required).
+- We used **Viem's publicClient** for reading contract state and **walletClient** for signing transactions.
+- Everything is deployed over Polkadot’s **Asset Hub**, taking advantage of **low gas fees**, **fast finality**, and **EVM compatibility**.
+
+---
+
+## 🔎 Block Explorer Link
+
+- [View Deployed Smart Contract on Asset Hub Explorer](LINK_TO_YOUR_DEPLOYED_CONTRACT_ON_EXPLORER)
+
+*(Paste your Polkadot Asset Hub block explorer link here — example: BlockScout/Subscan.)*
+
+---
+
+## 🎥 Video Tour of Code + Repo Structure
+
+- [Click here to watch the full code explanation video](LINK_TO_YOUR_REPO_WALKTHROUGH_VIDEO)
+
+The video includes:
+- Full demo of the frontend working
+- How the GitHub repo is structured (contracts, utils, components)
+- How we satisfied point 7 (Polkadot EVM interaction via Viem and MetaMask)
+- How the smart contract interacts with the frontend
+- Explanation of any challenges faced and solved
+
+---
