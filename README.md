@@ -39,26 +39,6 @@ https://assethub-westend.subscan.io/tx/0xd01a37d04dbb6ab1fcff45df30b9e2b5117d167
 
 ---
 
-## 📜 How the Smart Contract Works
-
-We deployed a Solidity smart contract on the Polkadot Asset Hub EVM chain to handle baggage information. The core functionality includes:
-
-- **storeBaggage(uint256 baggageId, string location, string stage)**  
-  Allows the handler to create a new baggage entry.
-
-- **updateLocation(uint256 baggageId, string newLocation, string newStage)**  
-  Allows updating the location and status (stage) of an existing baggage.
-
-- **getBaggage(uint256 baggageId)**  
-  Allows users to fetch the current location and stage of a baggage ID (free, no payment required).
-
-- **completeBaggage(uint256 baggageId)**  
-  Marks baggage as completed.
-
-✅ The contract uses simple mappings and struct storage for clean and efficient retrieval and update of baggage details.
-
----
-
 ## 🛠️ How the Frontend Works
 
 The frontend was built using **Next.js**, **React**, **TailwindCSS**, and **Viem**:
@@ -73,7 +53,7 @@ The frontend was built using **Next.js**, **React**, **TailwindCSS**, and **Viem
 
 ## 🔎 Block Explorer Link
 
-- [View Deployed Smart Contract on Asset Hub Explorer](LINK_TO_YOUR_DEPLOYED_CONTRACT_ON_EXPLORER)
+- [View Deployed Smart Contract on Asset Hub Explorer](Lhttps://assethub-westend.subscan.io/tx/0xd01a37d04dbb6ab1fcff45df30b9e2b5117d167bce4a40d0b62dd3baea863f20?ref=hackernoon.com)
 
 *(Paste your Polkadot Asset Hub block explorer link here — example: BlockScout/Subscan.)*
 
