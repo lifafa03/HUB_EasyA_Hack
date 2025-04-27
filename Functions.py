@@ -29,7 +29,7 @@ def create_bag(data):
     # success = create_bag_on_chain(
     #    bag_id, owner, flight_number, location, status, handler_signature, timestamp
     # )
-    success = create_bag_on_chain_mock(
+    success = create_bag_on_chain(
         bag_id, owner, flight_number, location, status, handler_signature, timestamp
     )
 
@@ -54,7 +54,7 @@ def add_event(data):
         return {"message": "Missing required parameters"}, 400
 
     # Ajouter l'événement sur la blockchain (ici, un mock)
-    success = add_event_on_mock(bag_id, location, status, timestamp, handler_signature)
+    success = add_event_on_chain(bag_id, location, status, timestamp, handler_signature)
 
     if success:
         return {"message": "Event added successfully"}, 201
@@ -95,7 +95,7 @@ def add_event_update(data):
     event_message = status_events[status]
 
     # Simuler l'appel à une fonction pour ajouter l'événement sur la blockchain
-    success = add_event_on_mock(
+    success = add_event_on_chain(
         bag_id, location, event_message, timestamp, handler_signature
     )
 
