@@ -5,7 +5,7 @@ import { publicClient } from '../utils/viem';
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from '../utils/contract';
 
 const ReadContract: React.FC = () => {
-  const [storedNumber, setStoredNumber] = useState<string | null>(null);
+  const [storedLocation, setStoredLocation] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,14 +16,14 @@ const ReadContract: React.FC = () => {
         setLoading(true);
         // Call the smart contract's storedNumber function
         //THIS RIGHT HERE MAKES A FUNCTION CALL!
-        const number = await publicClient.readContract({
+        const location = await publicClient.readContract({
             address: CONTRACT_ADDRESS,
             abi: CONTRACT_ABI,
-            functionName: 'storedNumber',
+            functionName: 'storedLocation',
             args: [],
-          }) as bigint;
+          }) as string;
 
-        setStoredNumber(number.toString());
+        setStoredLocation(location);
         setError(null);
       } catch (err) {
         console.error('Error fetching stored number:', err);
@@ -47,7 +47,7 @@ const ReadContract: React.FC = () => {
       <h2 className="text-lg font-bold text-center mb-4">Baggage Location</h2>
       <div className="text-center">
           <p className="text-sm font-mono bg-pink-100 px-2 py-1 rounded-md text-pink-700">
-            <strong>Stored Number:</strong> {storedNumber}
+            <strong>Stored Number:</strong> {storedLocation}
           </p>
         </div>
       <h2 className="text-lg font-bold text-center mb-4">Baggage ID</h2>
@@ -60,7 +60,7 @@ const ReadContract: React.FC = () => {
       ) : (
         <div className="text-center">
           <p className="text-sm font-mono bg-pink-100 px-2 py-1 rounded-md text-pink-700">
-            <strong>Stored Number:</strong> {storedNumber}
+            <strong>Stored Number:</strong> {storedLocation}
           </p>
         </div>
       )}
