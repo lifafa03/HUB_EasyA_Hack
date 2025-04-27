@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { publicClient, getWalletClient } from "../utils/viem";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "../utils/contract";
+import ReadContract from './ReadContract';  // Import ReadContract component
+//import { stringToBytes } from "viem";
 
 interface WriteContractProps {
   account: string | null;
@@ -11,6 +13,7 @@ interface WriteContractProps {
 const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
   const [formType, setFormType] = useState<string>("update"); // Track form type (update or create)
   const [newLocation, setNewLocation] = useState<string>("");
+  const [newStage, setNewStage] = useState<string>("");
   const [BaggageID, setNewBaggageID] = useState<string>("");
   const [status, setStatus] = useState<{
     type: string | null;
@@ -19,26 +22,24 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
     type: null,
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [IsSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting2, setIsSubmitting2] = useState<boolean>(false);
+  const [isSubmitting3, setIsSubmitting3] = useState<boolean>(false);
   //const [account, setAccount] = useState<string | null>(null); // Simulate account state
   const [isCorrectNetwork, setIsCorrectNetwork] = useState<boolean>(true);
 
   // Check if the account is on the correct network
   useEffect(() => {
+    console.log(JSON.stringify(CONTRACT_ABI, null, 2));  // Pretty print the ABI
     const checkNetwork = async () => {
       if (!account) return;
 
       try {
-        // Get the chainId from the public client
         const chainId = await publicClient.getChainId();
-
-        // Get the user's current chainId from their wallet
         const walletClient = await getWalletClient();
         if (!walletClient) return;
 
         const walletChainId = await walletClient.getChainId();
-
-        // Check if they match
         setIsCorrectNetwork(chainId === walletChainId);
       } catch (err) {
         console.error("Error checking network:", err);
@@ -49,159 +50,248 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
     checkNetwork();
   }, [account]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    // ----------- Individual Functions for Each Form -----------
 
-    // Validation checks
-    if (!account) {
-      setStatus({ type: "error", message: "Please connect your wallet first" });
-      return;
-    }
-
-    if (!isCorrectNetwork) {
-      setStatus({
-        type: "error",
-        message: "Please switch to the correct network in your wallet",
-      });
-      return;
-    }
-
-    if (!newLocation) {
-      setStatus({ type: "error", message: "Please enter a valid number" });
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-      setStatus({ type: "info", message: "Initiating transaction..." });
-
-      // Get wallet client for transaction signing
-      const walletClient = await getWalletClient();
-
-      if (!walletClient) {
-        setStatus({ type: "error", message: "Wallet client not available" });
-        return;
+    const updateLocationHandler = async () => {
+      if (!account) return setStatus({ type: "error", message: "Connect your wallet" });
+      if (!newLocation || !newStage || !BaggageID) return setStatus({ type: "error", message: "Fill all fields" });
+      try {
+        setIsSubmitting(true);
+        const walletClient = await getWalletClient();
+        const { result } = await publicClient.simulateContract({
+          address: CONTRACT_ADDRESS,
+          abi: CONTRACT_ABI,
+          functionName: "updateLocation",
+          args: [BaggageID, newLocation, newStage],
+          account: walletClient?.account,
+        });
+        const hashresult = await walletClient.writeContract({
+          address: CONTRACT_ADDRESS,
+          abi: CONTRACT_ABI,
+          functionName: "updateLocation",
+          args: [BaggageID, newLocation, newStage],
+          account: walletClient?.account,
+        });
+        //const hash = await walletClient.writeContract(result);
+        //await publicClient.waitForTransactionReceipt({ hash });
+        setStatus({ type: "success", message: "Location updated!" });
+      } catch (err: any) {
+        setStatus({ type: "error", message: err.message || "Update failed" });
+      } finally {
+        setIsSubmitting(false);
       }
-
-      // Check if account matches
-      if (
-        walletClient.account?.address.toLowerCase() !== account.toLowerCase()
-      ) {
-        setStatus({
-          type: "error",
-          message:
-            "Connected wallet account doesn't match the selected account",
+    };
+  
+    const createBaggageHandler = async () => {
+      if (!account) return setStatus({ type: "error", message: "Connect your wallet" });
+      if (!BaggageID || !newLocation) return setStatus({ type: "error", message: "Fill all fields" });
+      console.log(JSON.stringify(CONTRACT_ABI, null, 2));  // Pretty print the ABI
+      try {
+        //console.log(JSON.stringify(CONTRACT_ABI, null, 2));  // Pretty print the ABI
+        //console.log(CONTRACT_ABI.length);
+        setIsSubmitting(true);
+        const walletClient = await getWalletClient();
+        const result  = await publicClient.simulateContract({
+          address: CONTRACT_ADDRESS,
+          abi: CONTRACT_ABI,
+          functionName: "storeBaggage",
+          args: [BaggageID,newLocation,"check-in"],
+          account: walletClient.account,
         });
-        return;
+        const resulthash  = await walletClient.writeContract({
+          address: CONTRACT_ADDRESS,
+          abi: CONTRACT_ABI,
+          functionName: "storeBaggage",
+          args: [BaggageID, newLocation, "check-in"],
+        });
+        //const hash = await walletClient.writeContract(resulthash);
+        //await publicClient.waitForTransactionReceipt({ hash });
+        //setStatus({ type: "success", message: "Baggage created!" });
+      } catch (err: any) {
+        setStatus({ type: "error", message: err.message || "Creation failed" });
+      } finally {
+        setIsSubmitting(false);
       }
-
-      // Prepare transaction and wait for user confirmation in wallet
-      setStatus({
-        type: "info",
-        message: "Please confirm the transaction in your wallet...",
-      });
-
-      // Simulate the contract call first
-      console.log('newLocation', newLocation);
-      const { request } = await publicClient.simulateContract({
-        address: CONTRACT_ADDRESS,
-        abi: CONTRACT_ABI,
-        functionName: "getBaggage",
-        args: [BaggageID, newLocation],
-        account: walletClient.account,
-      });
-
-      // Send the transaction with wallet client
-      const hash = await walletClient.writeContract(request);
-
-      // Wait for transaction to be mined
-      setStatus({
-        type: "info",
-        message: "Transaction submitted. Waiting for confirmation...",
-      });
-
-      const receipt = await publicClient.waitForTransactionReceipt({
-        hash,
-      });
-
-      setStatus({
-        type: "success",
-        message: `Transaction confirmed! Transaction hash: ${receipt.transactionHash}`,
-      });
-
-      setNewLocation("");
-    } catch (err: any) {
-      console.error("Error updating number:", err);
-
-      // Handle specific errors
-      if (err.code === 4001) {
-        // User rejected transaction
-        setStatus({ type: "error", message: "Transaction rejected by user." });
-      } else if (err.message?.includes("Account not found")) {
-        // Account not found on the network
-        setStatus({
-          type: "error",
-          message:
-            "Account not found on current network. Please check your wallet is connected to the correct network.",
-        });
-      } else if (err.message?.includes("JSON is not a valid request object")) {
-        // JSON error - specific to your current issue
-        setStatus({
-          type: "error",
-          message:
-            "Invalid request format. Please try again or contact support.",
-        });
-      } else {
-        // Other errors
-        setStatus({
-          type: "error",
-          message: `Error: ${err.message || "Failed to send transaction"}`,
-        });
+    };
+  
+    const viewBaggageHandler = async () => {
+      if (!account) return setStatus({ type: "error", message: "Connect your wallet" });
+      if (!BaggageID) return setStatus({ type: "error", message: "Enter Baggage ID" });
+      try {
+        setIsSubmitting(true);
+        const result = await publicClient.readContract({
+          address: CONTRACT_ADDRESS,
+          abi: CONTRACT_ABI,
+          functionName: "getBaggage",
+          args: [BaggageID],
+        }) as [string,string];
+        const location = result[0];
+        const stage = result[1];
+        console.log(location,stage);
+        //setStatus({ type: "success", message: `Location: ${location}, Stage: ${stage}` });
+      } catch (err: any) {
+        setStatus({ type: "error", message: err.message || "View failed" });
+      } finally {
+        setIsSubmitting(false);
       }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    };
+  
+    // ----------- Main Handle Submit Controller -----------
+  
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!isCorrectNetwork) {
+        return setStatus({ type: "error", message: "Wrong network" });
+      }
+      if (formType === "update") {
+        await updateLocationHandler();
+      } else if (formType === "create") {
+        await createBaggageHandler();
+      } else if (formType === "view") {
+        await viewBaggageHandler();
+      }
+    };
 
+
+
+  //const handleSubmit = async (e: React.FormEvent) => {
+  //  e.preventDefault();
+//
+  //  if (!account) {
+  //    setStatus({ type: "error", message: "Please connect your wallet first" });
+  //    return;
+  //  }
+//
+  //  if (!isCorrectNetwork) {
+  //    setStatus({
+  //      type: "error",
+  //      message: "Please switch to the correct network in your wallet",
+  //    });
+  //    return;
+  //  }
+//
+  //  if (!newLocation && formType !== "view") {
+  //    setStatus({ type: "error", message: "Please enter a valid location" });
+  //    return;
+  //  }
+//
+  //  try {
+  //    setIsSubmitting(true);
+  //    setStatus({ type: "info", message: "Initiating transaction..." });
+//
+  //    const walletClient = await getWalletClient();
+  //    if (!walletClient) {
+  //      setStatus({ type: "error", message: "Wallet client not available" });
+  //      return;
+  //    }
+//
+  //    if (walletClient.account?.address.toLowerCase() !== account.toLowerCase()) {
+  //      setStatus({
+  //        type: "error",
+  //        message: "Connected wallet account doesn't match the selected account",
+  //      });
+  //      return;
+  //    }
+//
+  //    setStatus({
+  //      type: "info",
+  //      message: "Please confirm the transaction in your wallet...",
+  //    });
+//
+  //    if (formType === "update") {
+  //      // Update Location
+  //      const { result } = await publicClient.simulateContract({
+  //        address: CONTRACT_ADDRESS,
+  //        abi: CONTRACT_ABI,
+  //        functionName: "updateLocation",
+  //        args: [BaggageID, newLocation, newStage],
+  //        account: walletClient.account,
+  //      });
+//
+  //      const hash = await walletClient.writeContract(result);
+  //      const receipt = await publicClient.waitForTransactionReceipt({
+  //        hash,
+  //      });
+//
+  //      setStatus({
+  //        type: "success",
+  //        message: `Transaction confirmed! Transaction hash: ${receipt.transactionHash}`,
+  //      });
+//
+  //      setNewLocation("");
+  //      setNewStage("");
+  //    } else if (formType === "create") {
+  //      // Create New Baggage ID (You can expand this part with contract logic for creation)
+  //      const { result } = await publicClient.simulateContract({
+  //        address: CONTRACT_ADDRESS,
+  //        abi: CONTRACT_ABI,
+  //        functionName: "storeBaggage",
+  //        args: [BaggageID, newLocation],
+  //        account: walletClient.account,
+  //      });
+//
+  //      setStatus({
+  //        type: "info",
+  //        message: "Creating baggage, please wait...",
+  //      });
+//
+  //      const hash = await walletClient.writeContract(result);
+  //      const receipt = await publicClient.waitForTransactionReceipt({
+  //        hash,
+  //      });
+//
+  //      setStatus({
+  //        type: "success",
+  //        message: `Transaction confirmed! Transaction hash: ${receipt.transactionHash}`,
+  //      });
+//
+//
+  //    } else if (formType === "view") {
+  //      // View Location (fetch baggage details from contract)
+  //      const result = await publicClient.readContract({
+  //        address: CONTRACT_ADDRESS,
+  //        abi: CONTRACT_ABI,
+  //        functionName: "getBaggage",
+  //        args: [BaggageID],
+  //      });
+//
+  //      // Assuming the return is [location, stage] tuple
+  //      //setBaggageDetails({
+  //      //  location: result[0],
+  //      //  stage: result[1],
+  //      //});
+  //      //setStatus({
+  //      //  type: "success",
+  //      //  message: `Baggage found: ${result[0]} at stage: ${result[1]}`,
+  //      //});
+  //    }
+  //  } catch (err: any) {
+  //    console.error("Error:", err);
+  //    setStatus({
+  //      type: "error",
+  //      message: `Error: ${err.message || "Failed to send transaction"}`,
+  //    });
+  //  } finally {
+  //    setIsSubmitting(false);
+  //  }
+  //};
   return (
+      
     <div className="border border-pink-500 rounded-lg p-4 shadow-md bg-white text-pink-500 max-w-sm mx-auto space-y-4">
       
       {/* Dropdown or radio buttons to toggle between forms */}
-      <div className="space-x-4 mb-4">
-        <label>
-          <input
-            type="radio"
-            name="formType"
-            value="update"
-            checked={formType === "update"}
-            onChange={() => setFormType("update")}
-            className="mr-2"
-          />
-          Update Location
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="formType"
-            value="create"
-            checked={formType === "create"}
-            onChange={() => setFormType("create")}
-            className="mr-2"
-          />
-          Create New Baggage ID
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="formType"
-            value="view"
-            checked={formType === "view"}
-            onChange={() => setFormType("view")}
-            className="mr-2"
-          />
-          View Location
-        </label>
+      <div className="mb-4">
+      <select
+        value={formType}
+        onChange={(e) => setFormType(e.target.value)}
+        className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+      >
+        <option value="update">Update Location</option>
+        <option value="create">Create New Baggage ID</option>
+        <option value="view">View Location</option>
+      </select>
       </div>
+
 
       {/* Show status messages */}
       {status.message && (
@@ -250,25 +340,36 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
             <input
               type="text"
               placeholder="Baggage ID"
-              value={""}
+              value={BaggageID}
               onChange={(e) => setNewBaggageID(e.target.value)}
-              disabled={isSubmitting || !account}
+              disabled={IsSubmitting || !account}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
             />
             <input
               type="text"
-              placeholder="New Location"
+              placeholder="Location"
               value={newLocation}
               onChange={(e) => setNewLocation(e.target.value)}
-              disabled={isSubmitting || !account}
+              disabled={IsSubmitting || !account}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
             />
+            <select
+              value={newStage}
+              onChange={(e) => setNewStage(e.target.value)}
+              disabled={IsSubmitting || !account}
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+            >
+              <option value="check-in">Check-in</option>
+              <option value="on-plane">On Plane</option>
+              <option value="transfer">Transfer</option>
+              <option value="arrival">Arrival</option>
+            </select>
             <button
               type="submit"
-              disabled={isSubmitting || !account || !isCorrectNetwork}
+              disabled={IsSubmitting || !account || !isCorrectNetwork}
               className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition disabled:bg-gray-300"
             >
-              {isSubmitting ? "Updating..." : "Update Location"}
+              {IsSubmitting ? "Updating..." : "Update Location"}
             </button>
           </form>
         </>
@@ -281,9 +382,9 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
             <input
               type="text"
               placeholder="New Baggage ID"
-              value={""}
+              value={BaggageID}
               onChange={(e) => setNewBaggageID(e.target.value)}
-              disabled={isSubmitting || !account}
+              disabled={IsSubmitting || !account}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
             />
             <input
@@ -291,15 +392,15 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
               placeholder="Airport Code"
               value={newLocation}
               onChange={(e) => setNewLocation(e.target.value)}
-              disabled={isSubmitting || !account}
+              disabled={IsSubmitting || !account}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
             />
             <button
               type="submit"
-              disabled={isSubmitting || !account || !isCorrectNetwork}
+              disabled={IsSubmitting || !account || !isCorrectNetwork}
               className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition disabled:bg-gray-300"
             >
-              {isSubmitting ? "Creating..." : "Create Baggage"}
+              {IsSubmitting ? "Creating..." : "Create Baggage"}
             </button>
           </form>
         </>
@@ -312,17 +413,17 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
             <input
               type="text"
               placeholder="Baggage ID"
-              value={""}
+              value={BaggageID}
               onChange={(e) => setNewBaggageID(e.target.value)}
-              disabled={isSubmitting || !account}
+              disabled={IsSubmitting || !account}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
             />
             <button
               type="submit"
-              disabled={isSubmitting || !account || !isCorrectNetwork}
+              disabled={IsSubmitting || !account || !isCorrectNetwork}
               className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition disabled:bg-gray-300"
             >
-              {isSubmitting ? "Loading..." : "View Location"}
+              {IsSubmitting ? "Loading..." : "View Location"}
             </button>
           </form>
         </>
@@ -333,6 +434,11 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
           Connect your wallet to update the stored number.
         </p>
       )}
+     {/* <ReadContract 
+     //   BaggageID={BaggageID}
+     //   newLocation={newLocation}
+     //   newStage={newStage}
+     // */}
     </div>
   );
 };

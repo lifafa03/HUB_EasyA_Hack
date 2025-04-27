@@ -7,15 +7,9 @@
 				"type": "uint256"
 			}
 		],
-		"name": "getBaggage",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "location",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
+		"name": "completeBaggage",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -27,12 +21,12 @@
 			},
 			{
 				"internalType": "string",
-				"name": "airportCode",
+				"name": "location",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "location",
+				"name": "stage",
 				"type": "string"
 			}
 		],
@@ -52,11 +46,40 @@
 				"internalType": "string",
 				"name": "newLocation",
 				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "newStage",
+				"type": "string"
 			}
 		],
 		"name": "updateLocation",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "baggageId",
+				"type": "uint256"
+			}
+		],
+		"name": "getBaggage",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "stage",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	}
 ]
