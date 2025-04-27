@@ -1,4 +1,4 @@
-# HUB_EasyA_Hack
+# AirTrace
 ![AirTrace](Screenshot_52.png)
 
 ## Smart Contract Functionality: 
