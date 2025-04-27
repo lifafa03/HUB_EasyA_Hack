@@ -15,6 +15,7 @@ const ReadContract: React.FC = () => {
       try {
         setLoading(true);
         // Call the smart contract's storedNumber function
+        //THIS RIGHT HERE MAKES A FUNCTION CALL!
         const number = await publicClient.readContract({
             address: CONTRACT_ADDRESS,
             abi: CONTRACT_ABI,

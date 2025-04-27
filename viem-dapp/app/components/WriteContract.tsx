@@ -63,7 +63,7 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
       return;
     }
 
-    if (!newNumber || isNaN(Number(newNumber))) {
+    if (!newNumber) {
       setStatus({ type: "error", message: "Please enter a valid number" });
       return;
     }
@@ -104,7 +104,7 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
         address: CONTRACT_ADDRESS,
         abi: CONTRACT_ABI,
         functionName: "setNumber",
-        args: [BigInt(newNumber)],
+        args: [newNumber],
         account: walletClient.account,
       });
 
@@ -187,8 +187,8 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
-          type="number"
-          placeholder="New Number"
+          type="text"
+          placeholder="ID"
           value={newNumber}
           onChange={(e) => setNewNumber(e.target.value)}
           disabled={isSubmitting || !account}
