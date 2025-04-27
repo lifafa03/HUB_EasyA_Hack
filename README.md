@@ -1,5 +1,5 @@
 # HUB_EasyA_Hack
-![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](https://Screenshot_52.png)
+![AirTrace](Screenshot_52.png)
 
 ## Smart Contract Functionality: 
  The smart contract is written in solidity and deployed via the Remix IDE.\
