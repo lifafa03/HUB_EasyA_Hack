@@ -9,6 +9,7 @@ interface ReadContractProps {
 }
 
 const ReadContract: React.FC<ReadContractProps> = ({ BaggageID, newLocation, newStage }) => {
+  
   return (
     <div className="border border-pink-500 rounded-lg p-4 shadow-md bg-white text-pink-500 max-w-sm mx-auto">
       <h2 className="text-lg font-bold text-center mb-4">Baggage Data</h2>

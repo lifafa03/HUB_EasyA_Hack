@@ -114,10 +114,10 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
       }
     };
   
-   const viewBaggageHandler = async () => {
+  const viewBaggageHandler = async () => {
   if (!account) return setStatus({ type: "error", message: "Connect your wallet" });
   if (!BaggageID) return setStatus({ type: "error", message: "Enter Baggage ID" });
-
+    console.log(BaggageID);
   try {
     setIsSubmitting(true);
 
@@ -128,12 +128,12 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
       args: [BigInt(BaggageID)],
     }) as [string, string];
 
-    const location = result[0];
-    const stage = result[1];
+    setNewLocation(result[0]);
+    setNewStage(result[1]);
 
-    console.log("Location:", location, "Stage:", stage);
+    //console.log("Location:", location, "Stage:", stage);
 
-    setStatus({ type: "success", message: `Location: ${location}, Stage: ${stage}` });
+    //setStatus({ type: "success", message: `Location: ${location}, Stage: ${stage}` });
 
   } catch (err: any) {
     console.error(err);
@@ -157,6 +157,7 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
       } else if (formType === "create") {
         await createBaggageHandler();
       } else if (formType === "view") {
+        //setNewBaggageID() 
         await viewBaggageHandler();
       }
     };
