@@ -7,6 +7,8 @@ contract BaggageTracker {
     struct Baggage {
         string airportCode;
         string location;
+        string stage;
+        bool completed;
     }
 
     // Mapping from baggage ID to its info
