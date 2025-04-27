@@ -1,5 +1,12 @@
 # HUB_EasyA_Hack
 
+## Smart Contract Functionality: 
+ The smart contract is written in solidity and deployed via the Remix IDE.\
+ The smart contract has two main functionalities: **To view the baggage information, and then to update the baggage information**\
+ (With more time, functionality would be added that ensures checks that ONLY verified baggage handlers can update baggage information)
+ 
+ Here we have the functions: ``` storeBaggage , updateLocation, getBaggage ,completeBaggage```
+
 JFK , transfer, 123
 
 BOS, check-in, 456
