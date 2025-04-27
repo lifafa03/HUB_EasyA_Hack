@@ -9,7 +9,8 @@ interface WriteContractProps {
 }
 
 const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
-  const [newNumber, setNewNumber] = useState<string>("");
+  const [newLocation, setNewLocation] = useState<string>("");
+  const [BaggageID, setNewBaggageID] = useState<string>("");
   const [status, setStatus] = useState<{
     type: string | null;
     message: string;
@@ -63,7 +64,7 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
       return;
     }
 
-    if (!newNumber) {
+    if (!newLocation) {
       setStatus({ type: "error", message: "Please enter a valid number" });
       return;
     }
@@ -99,12 +100,12 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
       });
 
       // Simulate the contract call first
-      console.log('newNumber', newNumber);
+      console.log('newLocation', newLocation);
       const { request } = await publicClient.simulateContract({
         address: CONTRACT_ADDRESS,
         abi: CONTRACT_ABI,
-        functionName: "viewLocation",
-        args: [newNumber],
+        functionName: "getBaggage",
+        args: [BaggageId, newLocation],
         account: walletClient.account,
       });
 
@@ -126,7 +127,7 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
         message: `Transaction confirmed! Transaction hash: ${receipt.transactionHash}`,
       });
 
-      setNewNumber("");
+      setNewLocation("");
     } catch (err: any) {
       console.error("Error updating number:", err);
 
@@ -162,7 +163,8 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
 
   return (
     <div className="border border-pink-500 rounded-lg p-4 shadow-md bg-white text-pink-500 max-w-sm mx-auto space-y-4">
-      <h2 className="text-lg font-bold">Enter Your Baggage ID!</h2>
+      <h2 className="text-lg font-bold">Change Location</h2>
+      <h4 className="text-lg font-bold">Enter Baggage ID and New Location</h4>
 
       {!isCorrectNetwork && account && (
         <div className="p-2 rounded-md bg-yellow-100 text-yellow-700 text-sm">
@@ -189,8 +191,16 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
         <input
           type="text"
           placeholder="ID"
-          value={newNumber}
-          onChange={(e) => setNewNumber(e.target.value)}
+          value={newLocation}
+          onChange={(e) => setNewLocation(e.target.value)}
+          disabled={isSubmitting || !account}
+          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+        />
+        <input
+          type="text"
+          placeholder="New Location"
+          value={BaggageID}
+          onChange={(e) => setNewBaggageID(e.target.value)}
           disabled={isSubmitting || !account}
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
         />

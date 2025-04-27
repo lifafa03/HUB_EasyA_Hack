@@ -1,116 +1,18 @@
 [
 	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "baggageId",
-				"type": "uint256"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "flightId",
-				"type": "string"
-			}
-		],
-		"name": "BaggageRegistered",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
 				"internalType": "uint256",
 				"name": "baggageId",
 				"type": "uint256"
 			}
 		],
-		"name": "ClaimRaised",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "baggageId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "newStatus",
-				"type": "string"
-			}
-		],
-		"name": "StatusUpdated",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "baggages",
+		"name": "getBaggage",
 		"outputs": [
 			{
 				"internalType": "string",
-				"name": "flightId",
+				"name": "location",
 				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "currentStatus",
-				"type": "string"
-			},
-			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "feeReceiver",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "nextBaggageId",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -119,83 +21,42 @@
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "baggageId",
+				"type": "uint256"
+			},
+			{
 				"internalType": "string",
-				"name": "flightId",
+				"name": "airportCode",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "initialStatus",
+				"name": "location",
 				"type": "string"
 			}
 		],
-		"name": "registerBaggage",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "storedLocation",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "pure",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "newFee",
-				"type": "uint256"
-			}
-		],
-		"name": "updateViewFee",
+		"name": "storeBaggage",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "viewFee",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "uint256",
 				"name": "baggageId",
 				"type": "uint256"
-			}
-		],
-		"name": "viewLocation",
-		"outputs": [
+			},
 			{
 				"internalType": "string",
-				"name": "",
+				"name": "newLocation",
 				"type": "string"
 			}
 		],
-		"stateMutability": "pure",
+		"name": "updateLocation",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]
