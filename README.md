@@ -11,7 +11,7 @@ https://assethub-westend.subscan.io/tx/0xd01a37d04dbb6ab1fcff45df30b9e2b5117d167
 
 ## 📽️ Demo Video
 
-- [Click here to watch the full demo video with explanation](LINK_TO_YOUR_DEMO_VIDEO)
+- [Click here to watch the full demo video with explanation](https://www.loom.com/share/b7ef8e7332b640e0acdaf18f0ce79b63?sid=04f2d777-e5b6-40a7-80dd-2c8bd766f229)
 
 *(Replace with your Loom or YouTube video link.)*
 
