@@ -65,7 +65,7 @@ The frontend was built using **Next.js**, **React**, **TailwindCSS**, and **Viem
 
 ## 🎥 Video Tour of Code + Repo Structure
 
-- [Click here to watch the full code explanation video](LINK_TO_YOUR_REPO_WALKTHROUGH_VIDEO)
+- [Click here to watch the full code explanation video](https://www.loom.com/share/b7ef8e7332b640e0acdaf18f0ce79b63?sid=04f2d777-e5b6-40a7-80dd-2c8bd766f229)
 
 The video includes:
 - Full demo of the frontend working
