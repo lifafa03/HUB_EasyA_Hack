@@ -21,10 +21,10 @@ https://assethub-westend.subscan.io/tx/0xd01a37d04dbb6ab1fcff45df30b9e2b5117d167
 
 | Screen | Screenshot |
 |:------|:------------|
-| Home Page (Connect Wallet) | ![Home](screenshots/home.png) |
-| Customer View (View Location) | ![Customer View](screenshots/customer-view.png) |
-| Handler View (Update Location/Stage) | ![Handler View](screenshots/handler-view.png) |
-| Transaction Popup (MetaMask Confirm) | ![Transaction](screenshots/transaction-confirm.png) |
+| Home Page (Connect Wallet) | ![Home](screenshots/photo_4931780521181163284_y.jpg) |
+| Customer View (View Location) | ![Customer View](screenshots/photo_4931780521181163291_y.jpg) |
+| Handler View (Update Location/Stage) | ![Handler View](screenshots/photo_4931780521181163289_y.jpg) |
+
 
 *(Create a `/screenshots/` folder in your repo and upload your screenshots there.)*
 
@@ -57,9 +57,9 @@ The frontend was built using **Next.js**, **React**, **TailwindCSS**, and **Viem
 
 ## 🔎 Block Explorer Link
 
-- [View Deployed Smart Contract on Asset Hub Explorer](Lhttps://assethub-westend.subscan.io/tx/0xd01a37d04dbb6ab1fcff45df30b9e2b5117d167bce4a40d0b62dd3baea863f20?ref=hackernoon.com)
+- [View Deployed Smart Contract on Asset Hub Explorer](https://assethub-westend.subscan.io/tx/0xd01a37d04dbb6ab1fcff45df30b9e2b5117d167bce4a40d0b62dd3baea863f20?ref=hackernoon.com)
 
-*(Paste your Polkadot Asset Hub block explorer link here — example: BlockScout/Subscan.)*
+
 
 ---
 
