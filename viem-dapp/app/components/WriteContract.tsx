@@ -114,27 +114,36 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
       }
     };
   
-    const viewBaggageHandler = async () => {
-      if (!account) return setStatus({ type: "error", message: "Connect your wallet" });
-      if (!BaggageID) return setStatus({ type: "error", message: "Enter Baggage ID" });
-      try {
-        setIsSubmitting(true);
-        const result = await publicClient.readContract({
-          address: CONTRACT_ADDRESS,
-          abi: CONTRACT_ABI,
-          functionName: "getBaggage",
-          args: [BaggageID],
-        }) as [string,string];
-        const location = result[0];
-        const stage = result[1];
-        console.log(location,stage);
-        //setStatus({ type: "success", message: `Location: ${location}, Stage: ${stage}` });
-      } catch (err: any) {
-        setStatus({ type: "error", message: err.message || "View failed" });
-      } finally {
-        setIsSubmitting(false);
-      }
-    };
+   const viewBaggageHandler = async () => {
+  if (!account) return setStatus({ type: "error", message: "Connect your wallet" });
+  if (!BaggageID) return setStatus({ type: "error", message: "Enter Baggage ID" });
+
+  try {
+    setIsSubmitting(true);
+
+    const result = await publicClient.readContract({
+      address: CONTRACT_ADDRESS,
+      abi: CONTRACT_ABI,
+      functionName: "getBaggage",
+      args: [BigInt(BaggageID)],
+    }) as [string, string];
+
+    const location = result[0];
+    const stage = result[1];
+
+    console.log("Location:", location, "Stage:", stage);
+
+    setStatus({ type: "success", message: `Location: ${location}, Stage: ${stage}` });
+
+  } catch (err: any) {
+    console.error(err);
+    setStatus({ type: "error", message: err.message || "Failed to view location" });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
   
     // ----------- Main Handle Submit Controller -----------
   
@@ -434,11 +443,12 @@ const WriteContract: React.FC<WriteContractProps> = ({ account }) => {
           Connect your wallet to update the stored number.
         </p>
       )}
-     {/* <ReadContract 
-     //   BaggageID={BaggageID}
-     //   newLocation={newLocation}
-     //   newStage={newStage}
-     // */}
+     <ReadContract 
+  BaggageID={BaggageID}
+  newLocation={newLocation}
+  newStage={newStage}
+/>
+     
     </div>
   );
 };
