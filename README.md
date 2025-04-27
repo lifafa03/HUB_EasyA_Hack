@@ -1,6 +1,7 @@
 # AirTrace
 ![AirTrace](Screenshot_52.png)
 
+Welcome to AirTrace, a decentralized application (dApp) built on the Polkadot Asset Hub to track and update baggage information using blockchain technology. This project enables customers and baggage handlers to interact securely with baggage data through a user-friendly interface.
 
 
 
